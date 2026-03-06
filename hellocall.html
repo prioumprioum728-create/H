@@ -5,9 +5,7 @@
   <style>
     body { font-family: Arial; text-align: center; padding: 20px; background: #f0f0f0; }
     h1 { color: #2c3e50; }
-    input { padding: 10px; font-size: 18px; width: 200px; text-align: center; }
-    button { padding: 10px 20px; font-size: 18px; margin: 10px; border-radius: 5px; cursor: pointer; }
-    #callStatus { margin-top: 20px; font-weight: bold; color: green; }
+    input, button { padding: 10px; font-size: 18px; margin: 10px; border-radius: 5px; }
     video { width: 100%; max-width: 300px; margin-top: 20px; border-radius: 8px; }
   </style>
 </head>
@@ -24,22 +22,19 @@
   <video id="localVideo" autoplay muted></video>
   <video id="remoteVideo" autoplay></video>
 
-  <!-- PeerJS CDN for WebRTC -->
   <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
   <script>
-    let peer = new Peer(); // Generates unique ID
+    let peer = new Peer();
     let currentCall = null;
 
     const localVideo = document.getElementById('localVideo');
     const remoteVideo = document.getElementById('remoteVideo');
     const callStatus = document.getElementById('callStatus');
 
-    // Get your local media
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       .then(stream => {
         localVideo.srcObject = stream;
 
-        // Answer incoming calls
         peer.on('call', call => {
           currentCall = call;
           call.answer(stream);
@@ -49,14 +44,9 @@
           });
         });
       })
-      .catch(err => {
-        alert('Error accessing camera/mic: ' + err);
-      });
+      .catch(err => { alert('Error: ' + err); });
 
-    // PeerJS ID ready
-    peer.on('open', id => {
-      document.getElementById('myId').innerText = id;
-    });
+    peer.on('open', id => { document.getElementById('myId').innerText = id; });
 
     function startCall() {
       const remoteId = document.getElementById('remoteId').value;
